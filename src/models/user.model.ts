@@ -1,25 +1,27 @@
-import {Entity, model, property, hasOne, hasMany} from '@loopback/repository';
-import {generate} from '../utils';
-import {UserCredentials} from './user-credentials.model';
-import {Project} from './project.model';
-import {UserProfile} from './user-profile.model';
-import {SensingData} from './sensing-data.model';
-import {Member} from './member.model';
+import {Entity, model, property} from '@loopback/repository';
+import {RequestorInfo} from '.';
 
-@model()
+@model({settings: {strict: false}})
 export class User extends Entity {
   @property({
     type: 'string',
     id: true,
     generated: false,
     useDefaultIdType: false,
-    default: () => generate(),
   })
-  id: string;
+  uid: string;
 
   @property({
     type: 'string',
-    required: true,
+    jsonSchema: {
+      minLength: 4,
+      maxLength: 20,
+    },
+  })
+  name: string;
+
+  @property({
+    type: 'string',
     jsonSchema: {
       format: 'email',
     },
@@ -29,26 +31,16 @@ export class User extends Entity {
   @property({
     type: 'string',
     jsonSchema: {
-      minLength: 4,
-      maxLength: 20,
-    },
-  })
-  username?: string;
-
-  @property({
-    type: 'string',
-    jsonSchema: {
       format: 'uri-reference',
     },
   })
-  image?: string;
+  picture: string;
 
   @property({
-    type: 'array',
-    itemType: 'string',
-    default: [],
+    type: 'object',
+    default: {},
   })
-  roles: string[];
+  requestorInfo: RequestorInfo;
 
   @property({
     type: 'date',
@@ -62,21 +54,8 @@ export class User extends Entity {
   })
   createdAt: string;
 
-  @hasOne(() => UserCredentials)
-  userCredentials: UserCredentials;
-
-  @hasMany(() => Project, {keyTo: 'ownerId'})
-  ownProjects: Project[];
-
-  @hasOne(() => UserProfile, {keyTo: 'ownerId'})
-  userProfile: UserProfile;
-
-  @hasMany(() => SensingData, {keyTo: 'ownerId'})
-  sensingData: SensingData[];
-
-  @hasMany(() => Project, {through: {model: () => Member}})
-  projects: Project[];
-
+  // Indexer property to allow additional data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
   constructor(data?: Partial<User>) {

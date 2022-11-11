@@ -1,10 +1,6 @@
-import {Entity, model, property, belongsTo, hasOne, hasMany} from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
+import {Sensor, Spatiotemporal} from '.';
 import {generate} from '../utils';
-import {User} from './user.model';
-import {SensorSetting} from './sensor-setting.model';
-import {SpatiotemporalSetting} from './spatiotemporal-setting.model';
-import {SensingData} from './sensing-data.model';
-import {Member} from './member.model';
 
 @model()
 export class Project extends Entity {
@@ -19,7 +15,6 @@ export class Project extends Entity {
 
   @property({
     type: 'string',
-    required: true,
     jsonSchema: {
       minLength: 4,
       maxLength: 30,
@@ -29,7 +24,6 @@ export class Project extends Entity {
 
   @property({
     type: 'string',
-    required: true,
     jsonSchema: {
       minLength: 10,
       maxLength: 2000,
@@ -37,23 +31,12 @@ export class Project extends Entity {
   })
   overview: string;
 
-  @property({
-    type: 'date',
-    required: true,
+  @property.array(Date, {
     jsonSchema: {
       format: 'date-time',
     },
   })
-  startDate: string;
-
-  @property({
-    type: 'date',
-    required: true,
-    jsonSchema: {
-      format: 'date-time',
-    },
-  })
-  endDate: string;
+  expiration: string[];
 
   @property({
     type: 'string',
@@ -61,7 +44,17 @@ export class Project extends Entity {
       format: 'uri-reference',
     },
   })
-  image?: string;
+  image: string;
+
+  @property.array(Sensor, {
+    type: 'object',
+  })
+  sensors: Sensor[];
+
+  @property({
+    type: 'object',
+  })
+  spatiotemporal: Spatiotemporal;
 
   @property({
     type: 'date',
@@ -74,21 +67,6 @@ export class Project extends Entity {
     defaultFn: 'now',
   })
   createdAt: string;
-
-  @belongsTo(() => User)
-  ownerId: string;
-
-  @hasOne(() => SensorSetting)
-  sensorSetting: SensorSetting;
-
-  @hasOne(() => SpatiotemporalSetting)
-  spatiotemporalSetting: SpatiotemporalSetting;
-
-  @hasMany(() => SensingData)
-  sensingData: SensingData[];
-
-  @hasMany(() => User, {through: {model: () => Member}})
-  users: User[];
 
   [prop: string]: any;
 

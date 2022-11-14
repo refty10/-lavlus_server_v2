@@ -1,5 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
-import {RequestorInfo} from '.';
+import {RequesterInfo} from '.';
 
 @model({settings: {strict: false}})
 export class User extends Entity {
@@ -47,7 +47,13 @@ export class User extends Entity {
       birthDate: '',
     },
   })
-  requestorInfo: RequestorInfo;
+  requesterInfo: RequesterInfo;
+
+  @property({
+    type: 'boolean',
+    default: false,
+  })
+  allowRequest: boolean;
 
   @property({
     type: 'date',

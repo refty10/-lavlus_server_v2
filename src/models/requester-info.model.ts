@@ -1,14 +1,14 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model({settings: {strict: false}})
-export class RequestorInfo extends Entity {
+export class RequesterInfo extends Entity {
   @property({
     type: 'string',
     jsonSchema: {
       minLength: 2,
       maxLength: 20,
     },
-    default: '',
+    required: true,
   })
   realm: string;
 
@@ -17,7 +17,7 @@ export class RequestorInfo extends Entity {
     jsonSchema: {
       format: 'email',
     },
-    default: '',
+    required: true,
   })
   gender: 'male' | 'female' | 'other';
 
@@ -37,7 +37,7 @@ export class RequestorInfo extends Entity {
       minLength: 2,
       maxLength: 20,
     },
-    default: '',
+    required: true,
   })
   organization: string;
 
@@ -55,7 +55,7 @@ export class RequestorInfo extends Entity {
     jsonSchema: {
       format: 'date-time',
     },
-    default: '',
+    required: true,
   })
   birthDate: string;
 
@@ -63,13 +63,13 @@ export class RequestorInfo extends Entity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<RequestorInfo>) {
+  constructor(data?: Partial<RequesterInfo>) {
     super(data);
   }
 }
 
-export interface RequestorInfoRelations {
+export interface RequesterInfoRelations {
   // describe navigational properties here
 }
 
-export type RequestorInfoWithRelations = RequestorInfo & RequestorInfoRelations;
+export type RequesterInfoWithRelations = RequesterInfo & RequesterInfoRelations;

@@ -38,7 +38,14 @@ export class User extends Entity {
 
   @property({
     type: 'object',
-    default: {},
+    default: {
+      realm: '',
+      gender: '',
+      introduction: '',
+      organization: '',
+      url: '',
+      birthDate: '',
+    },
   })
   requestorInfo: RequestorInfo;
 

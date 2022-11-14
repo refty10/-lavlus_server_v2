@@ -10,6 +10,13 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
 
+import * as firebase from 'firebase-admin';
+import {AuthenticationComponent} from '@loopback/authentication';
+import {
+  JWTAuthenticationComponent,
+  TokenServiceBindings,
+} from '@loopback/authentication-jwt';
+import {FirebaseTokenService} from './services';
 export {ApplicationConfig};
 
 export class LavlusServerApplication extends BootMixin(
@@ -17,6 +24,12 @@ export class LavlusServerApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    // initialize firebase
+    firebase.initializeApp({
+      credential: firebase.credential.applicationDefault(),
+      projectId: 'lavlus',
+    });
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -40,5 +53,13 @@ export class LavlusServerApplication extends BootMixin(
         nested: true,
       },
     };
+
+    // JWT Authentication
+    this.component(AuthenticationComponent);
+    this.component(JWTAuthenticationComponent);
+    // This is the key component where we tell which class to use
+    // to verify the tokens. The class should implement TokenService interface
+    this.bind(TokenServiceBindings.TOKEN_SERVICE).toClass(FirebaseTokenService);
+    // this.bind(UserServiceBindings.UserProfile).toClass(FirebaseTokenService);
   }
 }

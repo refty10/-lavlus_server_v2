@@ -4,12 +4,12 @@ import {juggler} from '@loopback/repository';
 const config = {
   name: 'db',
   connector: 'mongodb',
-  url: '',
-  host: 'localhost',
-  port: 27018,
-  user: 'root',
-  password: 'password',
-  database: 'lavlus',
+  url: 'mongodb://root:password@localhost:27018/Lavlus?authSource=admin',
+  host: '',
+  port: '',
+  user: '',
+  password: '',
+  database: '',
   useNewUrlParser: true,
 };
 

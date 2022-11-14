@@ -8,6 +8,7 @@ export class RequestorInfo extends Entity {
       minLength: 2,
       maxLength: 20,
     },
+    default: '',
   })
   realm: string;
 
@@ -16,6 +17,7 @@ export class RequestorInfo extends Entity {
     jsonSchema: {
       format: 'email',
     },
+    default: '',
   })
   gender: 'male' | 'female' | 'other';
 
@@ -35,6 +37,7 @@ export class RequestorInfo extends Entity {
       minLength: 2,
       maxLength: 20,
     },
+    default: '',
   })
   organization: string;
 
@@ -52,6 +55,7 @@ export class RequestorInfo extends Entity {
     jsonSchema: {
       format: 'date-time',
     },
+    default: '',
   })
   birthDate: string;
 

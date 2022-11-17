@@ -1,5 +1,10 @@
 # Getting Started with Create React App
 
+## 変更する場合
+
+`npm run build` で `/dist` にファイルが生成される。
+その後、このフォルダのルートの `/public` フォルダに `/dist` の中身をコピーする。
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

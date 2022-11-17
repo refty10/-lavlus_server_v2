@@ -6,7 +6,13 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-import {param, get, getModelSchemaRef, response} from '@loopback/rest';
+import {
+  param,
+  get,
+  getModelSchemaRef,
+  response,
+  HttpErrors,
+} from '@loopback/rest';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
 // Authentication
@@ -62,11 +68,12 @@ export class UserController {
     const onlyRequesterFilter: Filter<User> = {
       where: {uid, allowRequest: true},
     };
-    const users = await this.userRepository.find({
+    const user = await this.userRepository.findOne({
       ...filter,
       ...onlyRequesterFilter,
     });
-    const filteredUid = users?.[0]?.uid ?? `${uid}"`;
-    return this.userRepository.findById(filteredUid);
+    if (!user)
+      throw new HttpErrors.NotFound(`Entity not found: User with id ${uid}`);
+    return user;
   }
 }

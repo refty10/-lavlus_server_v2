@@ -30,7 +30,7 @@ export class MeController {
     content: {
       'application/json': {
         schema: {
-          items: getModelSchemaRef(User, {includeRelations: true}),
+          items: getModelSchemaRef(User),
         },
       },
     },
@@ -63,6 +63,7 @@ export class MeController {
     const user = await this.userRepository.findById(uid);
     user.requesterInfo = requesterInfo;
     user.allowRequest = true;
+    user.updatedAt = new Date().toISOString();
     await this.userRepository.updateById(uid, user);
     return user;
   }

@@ -1,7 +1,67 @@
-import {Entity, model, property} from '@loopback/repository';
-import {RequesterInfo} from '.';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Project} from './project.model';
 
-@model({settings: {strict: false}})
+@model()
+export class RequesterInfo extends Entity {
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 2,
+      maxLength: 20,
+    },
+    required: true,
+  })
+  realm: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      format: 'email',
+    },
+    required: true,
+  })
+  gender: 'male' | 'female' | 'other';
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 0,
+      maxLength: 140,
+    },
+    default: '',
+  })
+  introduction: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 2,
+      maxLength: 20,
+    },
+    required: true,
+  })
+  organization: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      format: 'uri-reference',
+    },
+    default: '',
+  })
+  url: string;
+
+  @property({
+    type: 'date',
+    jsonSchema: {
+      format: 'date-time',
+    },
+    required: true,
+  })
+  birthDate: string;
+}
+
+@model()
 export class User extends Entity {
   @property({
     type: 'string',
@@ -36,17 +96,7 @@ export class User extends Entity {
   })
   picture: string;
 
-  @property({
-    type: 'object',
-    default: {
-      realm: '',
-      gender: '',
-      introduction: '',
-      organization: '',
-      url: '',
-      birthDate: '',
-    },
-  })
+  @property(RequesterInfo)
   requesterInfo: RequesterInfo;
 
   @property({
@@ -67,9 +117,8 @@ export class User extends Entity {
   })
   createdAt: string;
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @hasMany(() => Project, {keyTo: 'owner'})
+  projects: Project[];
 
   constructor(data?: Partial<User>) {
     super(data);

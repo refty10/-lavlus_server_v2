@@ -1,4 +1,4 @@
-import {FilterExcludingWhere, repository} from '@loopback/repository';
+import {FilterExcludingWhere, repository, Filter} from '@loopback/repository';
 import {
   param,
   get,
@@ -8,8 +8,9 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {User, RequesterInfo} from '../models';
+import {User, RequesterInfo, Sensing} from '../models';
 import {UserRepository} from '../repositories';
+
 // Authentication
 import {inject} from '@loopback/core';
 import {authenticate} from '@loopback/authentication';
@@ -26,7 +27,7 @@ export class MeController {
 
   @get('/me')
   @response(200, {
-    description: 'Own User model instances',
+    description: '自身のログイン情報を返します',
     content: {
       'application/json': {
         schema: {
@@ -35,7 +36,7 @@ export class MeController {
       },
     },
   })
-  async find(
+  async me(
     @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
   ): Promise<User> {
     const uid = this.currentUserProfile[securityId];
@@ -47,7 +48,7 @@ export class MeController {
     description: 'User model instance',
     content: {'application/json': {schema: getModelSchemaRef(User)}},
   })
-  async RequesterRegistration(
+  async requesterRegistration(
     @requestBody({
       content: {
         'application/json': {
@@ -68,11 +69,30 @@ export class MeController {
     return user;
   }
 
+  @get('/me/sensings', {
+    responses: {
+      '200': {
+        description: '自身がアップロードしたセンシングデータの一覧を返します',
+        content: {
+          'application/json': {
+            schema: {type: 'array', items: getModelSchemaRef(Sensing)},
+          },
+        },
+      },
+    },
+  })
+  async findSensings(
+    @param.query.object('filter') filter?: Filter<Sensing>,
+  ): Promise<Sensing[]> {
+    const uid = this.currentUserProfile[securityId];
+    return this.userRepository.sensings(uid).find(filter);
+  }
+
   // TODO: ユーザー登録を削除する場合の実装
 
   // @del('/me')
   // @response(204, {
-  //   description: 'User DELETE success',
+  //   description: '自身のユーザ登録を削除します',
   // })
   // async deleteById(): Promise<void> {
   //   const uid = this.currentUserProfile[securityId];

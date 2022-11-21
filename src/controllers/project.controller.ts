@@ -19,6 +19,7 @@ import {
 } from '@loopback/rest';
 import {Project, User} from '../models';
 import {ProjectRepository} from '../repositories';
+import {getRandomImage} from '../utils/getRandomImage';
 // Authentication
 import {inject} from '@loopback/core';
 import {authenticate} from '@loopback/authentication';
@@ -55,6 +56,7 @@ export class ProjectController {
       throw new HttpErrors.Unauthorized(
         'このエンドポイントへの権限がありません',
       );
+    project.image = await getRandomImage();
     project.owner = this.currentUserProfile[securityId];
     return this.projectRepository.create(project);
   }

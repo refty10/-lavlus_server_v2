@@ -1,5 +1,6 @@
-import {Entity, model, property} from '@loopback/repository';
-import {RequestorInfo} from '.';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Project} from './project.model';
+import {Sensing} from './sensing.model';
 
 @model()
 export class RequesterInfo extends Entity {
@@ -96,18 +97,14 @@ export class User extends Entity {
   })
   picture: string;
 
+  @property(RequesterInfo)
+  requesterInfo: RequesterInfo;
+
   @property({
-    type: 'object',
-    default: {
-      realm: '',
-      gender: '',
-      introduction: '',
-      organization: '',
-      url: '',
-      birthDate: '',
-    },
+    type: 'boolean',
+    default: false,
   })
-  requestorInfo: RequestorInfo;
+  allowRequest: boolean;
 
   @property({
     type: 'date',
@@ -121,9 +118,11 @@ export class User extends Entity {
   })
   createdAt: string;
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @hasMany(() => Project, {keyTo: 'owner'})
+  projects: Project[];
+
+  @hasMany(() => Sensing, {keyTo: 'owner'})
+  sensings: Sensing[];
 
   constructor(data?: Partial<User>) {
     super(data);

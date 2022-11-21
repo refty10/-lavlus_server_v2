@@ -21,7 +21,7 @@ export class MeController {
     @repository(UserRepository)
     public userRepository: UserRepository,
     @inject(SecurityBindings.USER)
-    public currentUserProfile: UserProfile,
+    public currentUserProfile: UserProfile & Omit<User, 'uid'>,
   ) {}
 
   @get('/me')

@@ -12,7 +12,6 @@ import {
   get,
   getModelSchemaRef,
   patch,
-  put,
   del,
   requestBody,
   response,
@@ -31,7 +30,7 @@ export class ProjectController {
     @repository(ProjectRepository)
     public projectRepository: ProjectRepository,
     @inject(SecurityBindings.USER)
-    public currentUserProfile: UserProfile & User,
+    public currentUserProfile: UserProfile & Omit<User, 'uid'>,
   ) {}
 
   @post('/projects')
@@ -58,7 +57,7 @@ export class ProjectController {
     })
     project: Omit<Project, 'id'>,
   ): Promise<Project> {
-    if (this.currentUserProfile.allowRequest)
+    if (!this.currentUserProfile.allowRequest)
       throw new HttpErrors.Unauthorized(
         'このエンドポイントへの権限がありません',
       );
@@ -75,94 +74,84 @@ export class ProjectController {
     return this.projectRepository.count(where);
   }
 
-  //   @get('/projects')
-  //   @response(200, {
-  //     description: 'Array of Project model instances',
-  //     content: {
-  //       'application/json': {
-  //         schema: {
-  //           type: 'array',
-  //           items: getModelSchemaRef(Project, {includeRelations: true}),
-  //         },
-  //       },
-  //     },
-  //   })
-  //   async find(
-  //     @param.filter(Project) filter?: Filter<Project>,
-  //   ): Promise<Project[]> {
-  //     return this.projectRepository.find(filter);
-  //   }
+  @get('/projects')
+  @response(200, {
+    description: 'Array of Project model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Project, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async find(
+    @param.filter(Project) filter?: Filter<Project>,
+  ): Promise<Project[]> {
+    return this.projectRepository.find(filter);
+  }
 
-  //   @patch('/projects')
-  //   @response(200, {
-  //     description: 'Project PATCH success count',
-  //     content: {'application/json': {schema: CountSchema}},
-  //   })
-  //   async updateAll(
-  //     @requestBody({
-  //       content: {
-  //         'application/json': {
-  //           schema: getModelSchemaRef(Project, {partial: true}),
-  //         },
-  //       },
-  //     })
-  //     project: Project,
-  //     @param.where(Project) where?: Where<Project>,
-  //   ): Promise<Count> {
-  //     return this.projectRepository.updateAll(project, where);
-  //   }
+  @get('/projects/{id}')
+  @response(200, {
+    description: 'Project model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Project, {includeRelations: true}),
+      },
+    },
+  })
+  async findById(
+    @param.path.string('id') id: string,
+    @param.filter(Project, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Project>,
+  ): Promise<Project> {
+    return this.projectRepository.findById(id, filter);
+  }
 
-  //   @get('/projects/{id}')
-  //   @response(200, {
-  //     description: 'Project model instance',
-  //     content: {
-  //       'application/json': {
-  //         schema: getModelSchemaRef(Project, {includeRelations: true}),
-  //       },
-  //     },
-  //   })
-  //   async findById(
-  //     @param.path.string('id') id: string,
-  //     @param.filter(Project, {exclude: 'where'})
-  //     filter?: FilterExcludingWhere<Project>,
-  //   ): Promise<Project> {
-  //     return this.projectRepository.findById(id, filter);
-  //   }
+  @patch('/projects/{id}')
+  @response(204, {
+    description: 'Project PATCH success',
+  })
+  async updateById(
+    @param.path.string('id') id: string,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Project, {
+            partial: true,
+            exclude: [
+              'id',
+              'updatedAt',
+              'createdAt',
+              'owner',
+              // 'members',
+            ],
+          }),
+        },
+      },
+    })
+    project: Project,
+  ): Promise<void> {
+    const foundProject = await this.projectRepository.findById(id);
+    if (this.currentUserProfile[securityId] !== foundProject.owner)
+      throw new HttpErrors.Unauthorized(
+        'このエンドポイントへの権限がありません',
+      );
+    project.updatedAt = new Date().toISOString();
+    await this.projectRepository.updateById(id, project);
+  }
 
-  //   @patch('/projects/{id}')
-  //   @response(204, {
-  //     description: 'Project PATCH success',
-  //   })
-  //   async updateById(
-  //     @param.path.string('id') id: string,
-  //     @requestBody({
-  //       content: {
-  //         'application/json': {
-  //           schema: getModelSchemaRef(Project, {partial: true}),
-  //         },
-  //       },
-  //     })
-  //     project: Project,
-  //   ): Promise<void> {
-  //     await this.projectRepository.updateById(id, project);
-  //   }
-
-  //   @put('/projects/{id}')
-  //   @response(204, {
-  //     description: 'Project PUT success',
-  //   })
-  //   async replaceById(
-  //     @param.path.string('id') id: string,
-  //     @requestBody() project: Project,
-  //   ): Promise<void> {
-  //     await this.projectRepository.replaceById(id, project);
-  //   }
-
-  //   @del('/projects/{id}')
-  //   @response(204, {
-  //     description: 'Project DELETE success',
-  //   })
-  //   async deleteById(@param.path.string('id') id: string): Promise<void> {
-  //     await this.projectRepository.deleteById(id);
-  //   }
+  @del('/projects/{id}')
+  @response(204, {
+    description: 'Project DELETE success',
+  })
+  async deleteById(@param.path.string('id') id: string): Promise<void> {
+    const foundProject = await this.projectRepository.findById(id);
+    if (this.currentUserProfile[securityId] !== foundProject.owner)
+      throw new HttpErrors.Unauthorized(
+        'このエンドポイントへの権限がありません',
+      );
+    await this.projectRepository.deleteById(id);
+  }
 }

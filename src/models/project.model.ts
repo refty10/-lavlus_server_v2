@@ -55,13 +55,12 @@ export class Period extends Entity {
   })
   entity: 'day' | 'week';
 
-  @property({
-    type: 'string',
+  @property.array(String, {
     jsonSchema: {
       enum: ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
     },
   })
-  dayOfWeek: 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
+  dayOfWeek: ('sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat')[];
 
   @property({
     jsonSchema: {

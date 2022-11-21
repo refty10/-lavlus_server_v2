@@ -1,6 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
 import {Feature} from 'geojson';
 import {generate} from '../utils';
+import {Sensing} from './sensing.model';
 
 // 対応センサの種類
 const sensorTypes = [
@@ -189,7 +190,13 @@ export class Project extends Entity {
   @property({
     type: 'string',
   })
-  owner?: string;
+  owner: string;
+
+  @property.array(String)
+  members: string[];
+
+  @hasMany(() => Sensing)
+  sensings: Sensing[];
 
   constructor(data?: Partial<Project>) {
     super(data);

@@ -27,7 +27,7 @@ export class UserController {
 
   @get('/users/count')
   @response(200, {
-    description: 'User model count',
+    description: 'ユーザの数を返します',
     content: {'application/json': {schema: CountSchema}},
   })
   async count(@param.where(User) where?: Where<User>): Promise<Count> {
@@ -36,7 +36,7 @@ export class UserController {
 
   @get('/users/requester')
   @response(200, {
-    description: 'Array of User model instances',
+    description: '依頼者情報の一覧を返します',
     content: {
       'application/json': {
         schema: {
@@ -53,7 +53,7 @@ export class UserController {
 
   @get('/users/requester/{uid}')
   @response(200, {
-    description: 'User model instance',
+    description: '指定したuidの依頼者情報を返します',
     content: {
       'application/json': {
         schema: getModelSchemaRef(User),

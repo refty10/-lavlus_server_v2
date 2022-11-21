@@ -35,7 +35,7 @@ export class ProjectController {
 
   @post('/projects')
   @response(200, {
-    description: 'Project model instance',
+    description: '[依頼者登録を行ったユーザのみ] 新規プロジェクトを作成します',
     content: {'application/json': {schema: getModelSchemaRef(Project)}},
   })
   async create(
@@ -44,13 +44,7 @@ export class ProjectController {
         'application/json': {
           schema: getModelSchemaRef(Project, {
             title: 'NewProject',
-            exclude: [
-              'id',
-              'updatedAt',
-              'createdAt',
-              'owner',
-              // 'members',
-            ],
+            exclude: ['id', 'updatedAt', 'createdAt', 'owner', 'members'],
           }),
         },
       },
@@ -67,7 +61,7 @@ export class ProjectController {
 
   @get('/projects/count')
   @response(200, {
-    description: 'Project model count',
+    description: '現在のプロジェクトの数を返します',
     content: {'application/json': {schema: CountSchema}},
   })
   async count(@param.where(Project) where?: Where<Project>): Promise<Count> {
@@ -76,7 +70,7 @@ export class ProjectController {
 
   @get('/projects')
   @response(200, {
-    description: 'Array of Project model instances',
+    description: 'プロジェクトの一覧を返します',
     content: {
       'application/json': {
         schema: {
@@ -94,7 +88,7 @@ export class ProjectController {
 
   @get('/projects/{id}')
   @response(200, {
-    description: 'Project model instance',
+    description: '指定したidのプロジェクトを返します',
     content: {
       'application/json': {
         schema: getModelSchemaRef(Project, {includeRelations: true}),
@@ -111,7 +105,7 @@ export class ProjectController {
 
   @patch('/projects/{id}')
   @response(204, {
-    description: 'Project PATCH success',
+    description: '[オーナーのみ] プロジェクトを編集します',
   })
   async updateById(
     @param.path.string('id') id: string,
@@ -120,13 +114,7 @@ export class ProjectController {
         'application/json': {
           schema: getModelSchemaRef(Project, {
             partial: true,
-            exclude: [
-              'id',
-              'updatedAt',
-              'createdAt',
-              'owner',
-              // 'members',
-            ],
+            exclude: ['id', 'updatedAt', 'createdAt', 'owner'],
           }),
         },
       },
@@ -144,7 +132,7 @@ export class ProjectController {
 
   @del('/projects/{id}')
   @response(204, {
-    description: 'Project DELETE success',
+    description: '[オーナーのみ] プロジェクトを削除します',
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     const foundProject = await this.projectRepository.findById(id);

@@ -11,10 +11,11 @@ export class UserProjectController {
     @repository(UserRepository) protected userRepository: UserRepository,
   ) {}
 
-  @get('/users/{id}/projects', {
+  @get('/users/{uid}/projects', {
     responses: {
       '200': {
-        description: 'Array of User has many Project',
+        description:
+          '指定したuidのユーザが作成したプロジェクトの一覧を返します',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Project)},
@@ -33,7 +34,8 @@ export class UserProjectController {
   @get('/users/name/{name}/projects', {
     responses: {
       '200': {
-        description: 'Array of User has many Project',
+        description:
+          '指定したnameのユーザが作成したプロジェクトの一覧を返します',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Project)},

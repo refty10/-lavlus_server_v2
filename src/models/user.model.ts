@@ -1,5 +1,6 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {Project} from './project.model';
+import {Sensing} from './sensing.model';
 
 @model()
 export class RequesterInfo extends Entity {
@@ -119,6 +120,9 @@ export class User extends Entity {
 
   @hasMany(() => Project, {keyTo: 'owner'})
   projects: Project[];
+
+  @hasMany(() => Sensing, {keyTo: 'owner'})
+  sensings: Sensing[];
 
   constructor(data?: Partial<User>) {
     super(data);

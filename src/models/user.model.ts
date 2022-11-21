@@ -1,7 +1,67 @@
 import {Entity, model, property} from '@loopback/repository';
 import {RequestorInfo} from '.';
 
-@model({settings: {strict: false}})
+@model()
+export class RequesterInfo extends Entity {
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 2,
+      maxLength: 20,
+    },
+    required: true,
+  })
+  realm: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      enum: ['male', 'female', 'other'],
+    },
+    required: true,
+  })
+  gender: 'male' | 'female' | 'other';
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 0,
+      maxLength: 140,
+    },
+    default: '',
+  })
+  introduction: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      minLength: 2,
+      maxLength: 20,
+    },
+    required: true,
+  })
+  organization: string;
+
+  @property({
+    type: 'string',
+    jsonSchema: {
+      format: 'uri-reference',
+    },
+    default: '',
+  })
+  url: string;
+
+  @property({
+    type: 'date',
+    jsonSchema: {
+      format: 'date-time',
+    },
+    required: true,
+  })
+  birthDate: string;
+}
+
+@model()
 export class User extends Entity {
   @property({
     type: 'string',

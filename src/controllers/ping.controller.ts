@@ -6,9 +6,6 @@ import {
   response,
   ResponseObject,
 } from '@loopback/rest';
-// Authentication
-import {authenticate} from '@loopback/authentication';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 
 /**
  * OpenAPI response for ping()
@@ -54,32 +51,5 @@ export class PingController {
       url: this.req.url,
       headers: Object.assign({}, this.req.headers),
     };
-  }
-
-  @authenticate('jwt')
-  @get('/whoAmI', {
-    responses: {
-      '200': {
-        description: 'Return current user',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'string',
-            },
-          },
-        },
-      },
-    },
-  })
-  async whoAmI(
-    @inject(SecurityBindings.USER)
-    currentUserProfile: UserProfile,
-  ): Promise<UserProfile> {
-    // console.log(currentUserProfile);
-    const user = {
-      uid: currentUserProfile[securityId],
-      ...currentUserProfile,
-    };
-    return user;
   }
 }

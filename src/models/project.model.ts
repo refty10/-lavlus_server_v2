@@ -62,10 +62,23 @@ export class Period extends Entity {
   })
   dayOfWeek: 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
 
-  @property.array(String, {
-    jsonSchema: {type: 'string', format: 'time', default: '10:00:00'},
+  @property({
+    jsonSchema: {
+      type: 'string',
+      format: 'time',
+      default: '10:00:00',
+    },
   })
-  expiration: string[];
+  startTime: string;
+
+  @property({
+    jsonSchema: {
+      type: 'string',
+      format: 'time',
+      default: '13:00:00',
+    },
+  })
+  endTime: string;
 
   constructor(data?: Partial<Sensor>) {
     super(data);
@@ -131,10 +144,21 @@ export class Project extends Entity {
   })
   overview: string;
 
-  @property.array(String, {
-    jsonSchema: {type: 'string', format: 'date-time'},
+  @property({
+    jsonSchema: {
+      type: 'string',
+      format: 'date-time',
+    },
   })
-  expiration: string[];
+  startDate: string;
+
+  @property({
+    jsonSchema: {
+      type: 'string',
+      format: 'date-time',
+    },
+  })
+  endDate: string;
 
   @property({
     jsonSchema: {

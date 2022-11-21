@@ -2,6 +2,7 @@ import {injectable, BindingScope} from '@loopback/core';
 import * as firebaseAdmin from 'firebase-admin';
 import {TokenService} from '@loopback/authentication';
 import {securityId, UserProfile} from '@loopback/security';
+import {HttpErrors} from '@loopback/rest';
 
 import {repository} from '@loopback/repository';
 import {UserRepository} from '../repositories';
@@ -58,7 +59,7 @@ export class FirebaseTokenService implements TokenService {
       return this.tokenToUserProfile(decodedToken);
     } catch (error) {
       console.error(error);
-      throw new FirebaseTokenError(`${error.code}`, 401);
+      throw new HttpErrors.Unauthorized(`Error encoding token : ${error.code}`);
     }
   }
 

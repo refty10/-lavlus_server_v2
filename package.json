@@ -34,6 +34,7 @@
     "prestart": "npm run rebuild",
     "start": "node -r source-map-support/register .",
     "db:start": "docker-compose build && docker-compose up -d",
+    "server:start": "npm run db:start && npm start",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "npm run clean && npm run build"
   },

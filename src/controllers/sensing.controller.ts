@@ -1,13 +1,6 @@
-import {FilterExcludingWhere, repository} from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-  del,
-  response,
-  HttpErrors,
-} from '@loopback/rest';
-import {Sensing, User} from '../models';
+import {repository} from '@loopback/repository';
+import {param, del, response, HttpErrors} from '@loopback/rest';
+import {User} from '../models';
 import {SensingRepository, ProjectRepository} from '../repositories';
 // Authentication
 import {inject} from '@loopback/core';
@@ -24,23 +17,6 @@ export class SensingController {
     @inject(SecurityBindings.USER)
     public currentUserProfile: UserProfile & Omit<User, 'uid'>,
   ) {}
-
-  @get('/sensings/{id}')
-  @response(200, {
-    description: 'Sensing model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Sensing, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Sensing, {exclude: 'where'})
-    filter?: FilterExcludingWhere<Sensing>,
-  ): Promise<Sensing> {
-    return this.sensingRepository.findById(id, filter);
-  }
 
   @del('/sensings/{id}')
   @response(204, {

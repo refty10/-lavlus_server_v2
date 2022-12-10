@@ -165,6 +165,7 @@ export class Project extends Entity {
       type: 'string',
       format: 'uri-reference',
     },
+    default: '',
   })
   image: string;
 

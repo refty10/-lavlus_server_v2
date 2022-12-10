@@ -18,5 +18,5 @@ const getRandomInt = (min: number, max: number) => {
 export const getRandomImage = async (): Promise<string> => {
   const link = `https://picsum.photos/id/${getRandomInt(0, 1000)}/info`;
   const {data} = await axios.get<PicsumData>(link);
-  return data.url;
+  return data.download_url;
 };

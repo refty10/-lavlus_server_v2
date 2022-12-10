@@ -77,7 +77,7 @@ export class ProjectController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Project, {includeRelations: true}),
+          items: getModelSchemaRef(Project, {includeRelations: false}),
         },
       },
     },
@@ -93,7 +93,7 @@ export class ProjectController {
     description: '指定したidのプロジェクトを返します',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Project, {includeRelations: true}),
+        schema: getModelSchemaRef(Project, {includeRelations: false}),
       },
     },
   })

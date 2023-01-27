@@ -1,10 +1,14 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
+require('dotenv').config();
+
 const config = {
   name: 'db',
   connector: 'mongodb',
-  url: 'mongodb://root:password@localhost:27018/Lavlus?authSource=admin',
+  url:
+    process.env.DB_URL ??
+    'mongodb://root:password@mongo:27017/Lavlus?authSource=admin',
   host: '',
   port: '',
   user: '',

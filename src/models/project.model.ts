@@ -5,16 +5,21 @@ import {Sensing} from './sensing.model';
 
 // 対応センサの種類
 const sensorTypes = [
-  'accelerometer',
-  'gyroscope',
-  'magnetometer',
-  'location',
-  'pressure',
-  'light',
-  'proximity',
-  'noiseLevel',
-  'wifi',
-  'ble',
+  'accelerometer', // 加速度
+  'liner_accelerometer', // 線形加速度
+  'gravity', // 重力
+  'gyroscope', // ジャイロスコープ
+  'magnetic_field', // 地磁気
+  'proximity', // 距離
+  'ambient_temperature', // 周囲の気温
+  'temperature', // 端末温度
+  'light', // 照度
+  'pressure', // 気圧
+  'relative_humidity', // 相対湿度
+  'gps', // GPS
+  'noise_level', // ノイズレベル
+  'wifi', // Wi-Fi
+  'ble', // Bluetooth
 ];
 
 @model()
@@ -59,6 +64,7 @@ export class Period extends Entity {
     jsonSchema: {
       enum: ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
     },
+    default: [],
   })
   dayOfWeek: ('sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat')[];
 
@@ -86,11 +92,30 @@ export class Period extends Entity {
 }
 
 @model()
-export class Spatiotemporal extends Entity {
+export class Location extends Entity {
   @property({
-    type: 'object',
+    type: 'number',
+    jsonSchema: {
+      minimum: -90,
+      maximum: 90,
+    },
   })
-  location: Feature;
+  latitude: number;
+
+  @property({
+    type: 'number',
+    jsonSchema: {
+      minimum: -180,
+      maximum: 180,
+    },
+  })
+  longitude: number;
+}
+
+@model()
+export class Spatiotemporal extends Entity {
+  @property(Location)
+  location: Location;
 
   @property({
     type: 'object',
@@ -192,7 +217,9 @@ export class Project extends Entity {
   })
   owner: string;
 
-  @property.array(String)
+  @property.array(String, {
+    default: [],
+  })
   members: string[];
 
   @hasMany(() => Sensing)

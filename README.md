@@ -5,11 +5,23 @@ This application is generated using [LoopBack 4 CLI](https://loopback.io/doc/en/
 
 ## Docker の起動
 
-Docker で Minio と MongoDb を起動します
+Docker でサーバを起動します。
 
 ```sh
-npm run db:start
+npm run docker:start
 ```
+
+一度、コンテナを削除する場合はこちらを利用
+
+```sh
+npm run docker:down
+```
+
+`docker-compose.override.yml.example`をコピーして
+`docker-compose.override.yml`をルートに置くとデータベースのみ Docker で展開されます
+開発中に使ってください
+
+`.env.example`も同様です
 
 ## Install dependencies
 

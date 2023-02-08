@@ -2,8 +2,9 @@ version: '3.9'
 
 services:
   minio:
-    image: quay.io/minio/minio:latest
+    image: quay.io/minio/minio
     container_name: minio
+    restart: always #停止したら常に再起動
     environment:
       MINIO_ROOT_USER: root
       MINIO_ROOT_PASSWORD: password
@@ -11,12 +12,39 @@ services:
     ports:
       - 9000:9000
       - 9001:9001
+    volumes:
+      - minio_data_store:/data
 
   mongo:
     image: mongo
-    restart: always
+    container_name: mongo
+    restart: always #停止したら常に再起動
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - 27018:27017
+    volumes:
+      - mongo_data_store:/data/db
+      - mongo_data_store:/data/configdb
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_express
+    restart: always #停止したら常に再起動
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongo
+    depends_on:
+      #サービス同士の依存関係を指定
+      # mongoが作成されてからmongo-expressを作成する
+      - mongo
+
+volumes:
+  mongo_data_store:
+    name: mongo_data_store
+  minio_data_store:
+    name: minio_data_store

@@ -44,7 +44,7 @@ export class UserProjectController {
       },
     },
   })
-  async findOnName(
+  async findByName(
     @param.path.string('name') name: string,
     @param.query.object('filter') filter?: Filter<Project>,
   ): Promise<Project[]> {

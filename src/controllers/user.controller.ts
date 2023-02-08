@@ -76,4 +76,30 @@ export class UserController {
       throw new HttpErrors.NotFound(`Entity not found: User with id ${uid}`);
     return user;
   }
+
+  @get('/users/requester/name/{name}')
+  @response(200, {
+    description: '指定したnameの依頼者情報を返します',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(User),
+      },
+    },
+  })
+  async findByName(
+    @param.path.string('name') name: string,
+    @param.filter(User, {exclude: 'where'})
+    filter?: FilterExcludingWhere<User>,
+  ): Promise<User> {
+    const onlyRequesterFilter: Filter<User> = {
+      where: {name, allowRequest: true},
+    };
+    const user = await this.userRepository.findOne({
+      ...filter,
+      ...onlyRequesterFilter,
+    });
+    if (!user)
+      throw new HttpErrors.NotFound(`Entity not found: User with name ${name}`);
+    return user;
+  }
 }

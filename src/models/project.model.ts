@@ -35,7 +35,7 @@ export class Sensor extends Entity {
   @property({
     type: 'number',
     jsonSchema: {
-      minimum: 1,
+      minimum: 0.001,
       maximum: 1000,
     },
   })

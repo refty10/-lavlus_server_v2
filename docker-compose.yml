@@ -1,8 +1,8 @@
-version: '3.9'
+version: '3'
 
 services:
   minio:
-    image: quay.io/minio/minio
+    image: minio/minio
     container_name: minio
     restart: always #停止したら常に再起動
     environment:
